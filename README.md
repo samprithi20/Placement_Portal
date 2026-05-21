@@ -1,0 +1,1 @@
+A simple placement portal management app to track down the placement progress of a student.
