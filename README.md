@@ -1,1 +1,13 @@
-A simple placement portal management app to track down the placement progress of a student.
+# Placement Portal Application
+
+Placement Portal Application built using:
+- Flask
+- VueJS
+- SQLite
+- Redis
+- Celery
+
+Roles:
+- Admin
+- Company
+- Student
