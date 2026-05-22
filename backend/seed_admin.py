@@ -3,8 +3,6 @@ from database import db
 from models.user import User
 
 with app.app_context():
-
-    # check if admin already exists
     admin = User.query.filter_by(role="admin").first()
 
     if admin:
@@ -12,7 +10,7 @@ with app.app_context():
     else:
         new_admin = User(
             email="admin@placement.com",
-            password="admin123",   # (simple for milestone; no hashing required unless you want)
+            password="admin123",   
             role="admin"
         )
 
