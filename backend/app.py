@@ -40,7 +40,6 @@ with app.app_context():
     ).first()
 
     if not admin_exists:
-
         admin = User(
             email="admin@ppa.com",
             password="admin123",
