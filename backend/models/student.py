@@ -17,3 +17,9 @@ class Student(db.Model):
     graduation_year = db.Column(db.Integer)
 
     skills = db.Column(db.Text)
+
+    education = db.Column(db.Text)
+
+    experience = db.Column(db.Text)
+
+    resume = db.Column(db.String(200))
