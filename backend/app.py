@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_jwt_extended import (
     JWTManager,
     create_access_token,
@@ -16,7 +16,10 @@ from models.job_position import JobPosition
 from models.application import Application
 from models.placement import Placement
 
+#from tasks import export_student_csv
+
 app = Flask(__name__)
+           # template_folder="../frontend")
 
 app.config.from_object(Config)
 
@@ -51,9 +54,8 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    return jsonify({
-        "message": "Placement Portal API Running"
-    })
+    #return render_template("login.html")
+    return jsonify({"message": "Placement Portal API Running"})
 
 
 @app.route("/register/student", methods=["POST"])
@@ -343,6 +345,11 @@ def create_job():
     company = Company.query.filter_by(
         user_id=user.id
     ).first()
+
+    if company.approval_status != "approved":
+        return jsonify({
+            "message": "Company not approved"
+        }), 403
 
     data = request.json
 
@@ -971,6 +978,20 @@ def update_application(application_id):
 
     data = request.json
 
+    allowed_statuses = [
+    "applied",
+    "shortlisted",
+    "interview",
+    "offer",
+    "rejected",
+    "placed"
+    ]
+
+    if data["status"] not in allowed_statuses:
+        return jsonify({
+            "message": "Invalid status"
+        }), 400
+
     application.status = data["status"]
 
     application.feedback = data.get("feedback")
@@ -1007,10 +1028,13 @@ def schedule_interview(application_id):
 
     application.interview_date = data["interview_date"]
 
+    application.status = "interview"
+
     db.session.commit()
 
     return jsonify({
-        "message": "Interview scheduled"
+        "message": "Interview scheduled",
+        "status" : application.status
     })
 
 @app.route("/company/close-job/<int:job_id>", methods=["PUT"])
@@ -1186,7 +1210,7 @@ def offer_letter(application_id):
             "message": "Application not found"
         }), 404
 
-    if application.status != "selected":
+    if application.status not in ["offer", "placed"]:
         return jsonify({
             "message": "Offer letter not available"
         }), 400
@@ -1204,6 +1228,39 @@ def offer_letter(application_id):
         "company": company.company_name,
         "job_title": job.title,
         "status": application.status
+    })
+
+@app.route("/student/export-csv")
+@jwt_required()
+def export_csv():
+
+    from tasks import export_student_csv
+
+    user_id = get_jwt_identity()
+
+    user = User.query.get(
+        int(user_id)
+    )
+
+    if user.role != "student":
+
+        return jsonify({
+            "message": "Unauthorized"
+        }), 403
+
+    student = Student.query.filter_by(
+        user_id=user.id
+    ).first()
+
+    task = export_student_csv.delay(
+        student.id
+    )
+
+    return jsonify({
+
+        "message": "CSV export started",
+
+        "task_id": task.id
     })
 
 if __name__ == "__main__":

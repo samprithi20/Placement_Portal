@@ -4,3 +4,14 @@ __pycache__/
 *.db
 dist/
 .env
+# Generated reports
+backend/reports/
+
+# Generated CSV exports
+backend/exports/
+
+# Celery Beat scheduler files
+backend/celerybeat-schedule
+backend/celerybeat-schedule.bak
+backend/celerybeat-schedule.dat
+backend/celerybeat-schedule.dir
