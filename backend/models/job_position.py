@@ -23,3 +23,9 @@ class JobPosition(db.Model):
     experience_required = db.Column(db.String(100))
 
     benefits = db.Column(db.Text)
+
+    eligible_department = db.Column(db.String(100))
+
+    minimum_cgpa = db.Column(db.Float)
+
+    eligible_batch = db.Column(db.Integer)
