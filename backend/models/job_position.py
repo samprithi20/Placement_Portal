@@ -24,8 +24,8 @@ class JobPosition(db.Model):
 
     benefits = db.Column(db.Text)
 
-    eligible_department = db.Column(db.String(100))
+    eligible_department = db.Column(db.Text)
 
     minimum_cgpa = db.Column(db.Float)
 
-    eligible_batch = db.Column(db.Integer)
+    eligible_batch = db.Column(db.String(100))

@@ -11,7 +11,7 @@ class Placement(db.Model):
 
     position = db.Column(db.String(100))
 
-    salary = db.Column(db.Float)
+    salary = db.Column(db.String(100))
 
     joining_date = db.Column(db.Date)
     

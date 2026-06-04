@@ -39,6 +39,10 @@ def admin_dashboard():
         approval_status="pending"
     ).count()
 
+    pending_jobs = JobPosition.query.filter_by(
+        status="pending"
+    ).count()
+
     total_applications = Application.query.count()
 
     return jsonify({
@@ -46,7 +50,8 @@ def admin_dashboard():
     "total_companies": total_companies,
     "total_jobs": total_jobs,
     "total_applications": total_applications,
-    "pending_companies": pending_companies
+    "pending_companies": pending_companies,
+    "pending_jobs": pending_jobs
     })
 
 
@@ -324,7 +329,8 @@ def pending_companies():
             "id": company.id,
             "company_name": company.company_name,
             "industry": company.industry,
-            "hr_name": company.hr_name
+            "hr_name": company.hr_name,
+            "hr_email":company.hr_email
         })
 
     return jsonify(result)

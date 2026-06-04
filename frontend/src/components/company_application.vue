@@ -1,14 +1,26 @@
 <template>
 
   <div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <h2>Applications</h2>
+      <h2 class="m-0">Applications</h2>
 
+      <button
+        class="btn btn-secondary"
+        @click="$router.push('/company')"
+      >
+        Back to Dashboard
+      </button>
+
+    </div>
+
+    
     <div
       v-for="application in applications"
       :key="application.id"
       class="card p-3 mt-3"
     >
+
 
       <h5>
         Student:

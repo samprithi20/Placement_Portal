@@ -32,12 +32,18 @@
 
       <p>
         Status:
-        {{ application.status }}
+        {{application.status
+          ? application.status
+          : "Applied"}}
       </p>
 
       <p>
         Interview Date:
-        {{ application.interview_date || "Not Scheduled" }}
+        {{
+          application.interview_date !== "Not Scheduled"
+            ? new Date(application.interview_date).toLocaleString()
+            : "Not Scheduled"
+        }}
       </p>
 
       <p>

@@ -2,7 +2,18 @@
 
   <div class="container mt-5">
 
-    <h2>Posted Jobs</h2>
+    <div class="d-flex justify-content-between mb-4">
+
+      <h2>Posted Jobs</h2>
+
+      <button
+        class="btn btn-secondary"
+        @click="$router.push('/company')"
+      >
+        Back
+      </button>
+
+    </div>
 
     <div
       v-for="job in jobs"
@@ -31,6 +42,24 @@
         Applications:
         {{ job.applications }}
       </p>
+
+      <div class="d-flex gap-2">
+
+        <button
+          class="btn btn-primary"
+          @click="viewApplications(job.id)"
+        >
+          View Applications
+        </button>
+
+        <button
+          class="btn btn-danger"
+          @click="closeJob(job.id)"
+        >
+          Close Job
+        </button>
+
+      </div>
 
     </div>
 
@@ -75,6 +104,39 @@ export default {
 
       this.jobs = data
 
+    },
+
+    viewApplications(jobId) {
+
+      this.$router.push(
+        `/job-applications/${jobId}`
+      )
+
+    },
+
+    async closeJob(jobId) {
+
+      const token = localStorage.getItem("token")
+
+      const response = await fetch(
+        `http://127.0.0.1:5000/company/close-job/${jobId}`,
+        {
+
+          method: "PUT",
+
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+
+        }
+      )
+
+      const data = await response.json()
+
+      alert(data.message)
+
+      this.loadJobs()
+
     }
 
   },
@@ -88,3 +150,11 @@ export default {
 }
 
 </script>
+
+<style scoped>
+
+.card {
+  border-radius: 12px;
+}
+
+</style>

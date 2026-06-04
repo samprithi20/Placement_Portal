@@ -104,6 +104,22 @@
 
         <label>Upload Resume</label>
 
+        <p
+          v-if="student.resume"
+          class="mb-2"
+        >
+
+          Current Resume:
+          
+          <a
+            :href="`http://127.0.0.1:5000/uploads/${student.resume}`"
+            target="_blank"
+          >
+            {{ student.resume }}
+          </a>
+
+        </p>
+
         <input
           type="file"
           class="form-control"

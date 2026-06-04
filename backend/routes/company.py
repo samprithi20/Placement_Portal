@@ -31,9 +31,21 @@ def company_dashboard():
     ).first()
 
     return jsonify({
+
         "company_name": company.company_name,
+
         "industry": company.industry,
-        "approval_status": company.approval_status
+
+        "approval_status": company.approval_status,
+
+        "location": company.location,
+
+        "hr_name": company.hr_name,
+
+        "website": company.website,
+
+        "hr_email": company.hr_email
+
     })
 
 @cmp_bp.route("/company/create-job", methods=["POST"])
@@ -146,6 +158,16 @@ def job_applications(job_id):
         job_id=job_id
     ).all()
 
+    job = JobPosition.query.get(job_id)
+
+    company = Company.query.filter_by(
+        user_id=user.id
+    ).first()
+
+    if job.company_id != company.id:
+        return jsonify({
+            "message": "Unauthorized access"
+        }), 403
     result = []
 
     for application in applications:
@@ -161,6 +183,44 @@ def job_applications(job_id):
             "cgpa": student.cgpa,
             "status": application.status,
             "interview_date": application.interview_date
+            
+        })
+
+    return jsonify(result)
+
+@cmp_bp.route("/company/applications")
+@jwt_required()
+def company_applications():
+
+    user_id = get_jwt_identity()
+    user = User.query.get(int(user_id))
+
+    if user.role != "company":
+        return jsonify({"message": "Unauthorized"}), 403
+
+    company = Company.query.filter_by(user_id=user.id).first()
+
+    # get all jobs of this company
+    jobs = JobPosition.query.filter_by(company_id=company.id).all()
+    job_ids = [job.id for job in jobs]
+
+    # get all applications for those jobs
+    applications = Application.query.filter(
+        Application.job_id.in_(job_ids)
+    ).all()
+
+    result = []
+
+    for app in applications:
+
+        student = Student.query.get(app.student_id)
+        job = JobPosition.query.get(app.job_id)
+
+        result.append({
+            "id": app.id,
+            "student_name": student.full_name,
+            "job_title": job.title,
+            "status": app.status
         })
 
     return jsonify(result)
@@ -178,9 +238,7 @@ def update_application(application_id):
             "message": "Unauthorized"
         }), 403
 
-    application = Application.query.get(
-        application_id
-    )
+    application = Application.query.get(application_id)
 
     if not application:
         return jsonify({
@@ -190,12 +248,10 @@ def update_application(application_id):
     data = request.json
 
     allowed_statuses = [
-    "applied",
-    "shortlisted",
-    "interview",
-    "offer",
-    "rejected",
-    "placed"
+        "applied",
+        "interview scheduled",
+        "rejected",
+        "placed"
     ]
 
     if data["status"] not in allowed_statuses:
@@ -206,6 +262,31 @@ def update_application(application_id):
     application.status = data["status"]
 
     application.feedback = data.get("feedback")
+
+    if data["status"] == "placed":
+
+        job = JobPosition.query.get(application.job_id)
+
+        existing_placement = Placement.query.filter_by(
+            student_id=application.student_id,
+            company_id=job.company_id
+        ).first()
+
+        if not existing_placement:
+
+            placement = Placement(
+
+                student_id=application.student_id,
+
+                company_id=job.company_id,
+
+                position=job.title,
+
+                salary=job.salary
+
+            )
+
+            db.session.add(placement)
 
     db.session.commit()
 
@@ -238,10 +319,12 @@ def schedule_interview(application_id):
         }), 404
 
     data = request.json
+    print(data)
 
     application.interview_date = data["interview_date"]
+    print(application.interview_date)
 
-    application.status = "interview"
+    application.status = "interview scheduled"
 
     db.session.commit()
 

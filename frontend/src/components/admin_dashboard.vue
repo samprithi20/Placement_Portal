@@ -41,6 +41,11 @@
         {{ dashboard.pending_companies }}
       </h5>
 
+      <h5>
+        Pending Jobs: 
+        {{  dashboard.pending_jobs }}
+      </h5>
+
     </div>
 
     <div class="d-flex gap-3 mb-4">
@@ -106,6 +111,55 @@
 
     </div>
 
+    <h3 class="mb-3 mt-5">
+      Pending Jobs
+    </h3>
+
+    <div
+      v-for="job in jobs"
+      :key="job.id"
+      class="card p-3 mb-3"
+    >
+
+      <h5>
+        {{ job.title }}
+      </h5>
+
+      <p>
+        <strong>Company:</strong>
+        {{ job.company_name }}
+      </p>
+
+      <p>
+        <strong>Location:</strong>
+        {{ job.location }}
+      </p>
+
+      <p>
+        <strong>Salary:</strong>
+        {{ job.salary }}
+      </p>
+
+      <div class="d-flex gap-2">
+
+        <button
+          class="btn btn-success"
+          @click="approveJob(job.id)"
+        >
+          Approve Job
+        </button>
+
+        <button
+          class="btn btn-danger"
+          @click="rejectJob(job.id)"
+        >
+          Reject Job
+        </button>
+
+      </div>
+
+</div>
+
   </div>
 
 </template>
@@ -125,11 +179,13 @@ export default {
         total_students: 0,
         total_companies: 0,
         total_jobs: 0,
-        pending_companies: 0
+        pending_companies: 0,
+        pending_jobs: 0
 
       },
 
-      companies: []
+      companies: [],
+      jobs: []
 
     }
 
@@ -206,6 +262,79 @@ export default {
 
     },
 
+    async loadPendingJobs() {
+
+      const token = localStorage.getItem("token")
+
+      const response = await fetch(
+        "http://127.0.0.1:5000/admin/pending-jobs",
+        {
+
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+
+        }
+      )
+
+      const data = await response.json()
+
+      this.jobs = data
+
+    },
+
+    async approveJob(jobId) {
+
+      const token = localStorage.getItem("token")
+
+      const response = await fetch(
+        `http://127.0.0.1:5000/admin/approve-job/${jobId}`,
+        {
+
+          method: "PUT",
+
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+
+        }
+      )
+
+      const data = await response.json()
+
+      alert(data.message)
+
+      this.loadPendingJobs()
+
+      this.loadDashboard()
+
+    },
+
+    async rejectJob(jobId) {
+
+      const token = localStorage.getItem("token")
+
+      const response = await fetch(
+        `http://127.0.0.1:5000/admin/reject-job/${jobId}`,
+        {
+
+          method: "DELETE",
+
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+
+        }
+      )
+
+      const data = await response.json()
+
+      alert(data.message)
+
+      this.loadPendingJobs()
+
+    },
+
     logout() {
 
       localStorage.removeItem("token")
@@ -223,6 +352,8 @@ export default {
     this.loadDashboard()
 
     this.loadPendingCompanies()
+
+    this.loadPendingJobs()
 
   }
 

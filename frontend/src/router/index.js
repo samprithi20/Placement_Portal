@@ -14,8 +14,6 @@ import RegisterCompany from "../components/register_company.vue"
 
 import StudentJobs from "../components/student_jobs.vue"
 
-//import MyApplications from "../components/applications.vue"
-
 import AllStudents from "../components/all_students.vue"
 
 import AllCompanies from "../components/all_companies.vue"
@@ -31,6 +29,9 @@ import CompanyApplications from "../components/company_application.vue"
 import MyApplications from "../components/my_applications.vue"
 
 import EditProfile from "../components/student_edit_profile.vue"
+
+import JobApplications from "../components/job_applications.vue"
+
 
 const routes = [
 
@@ -100,13 +101,18 @@ const routes = [
   },
 
   {
-    path: "/company-applications",
+   path: "/company-applications",
     component: CompanyApplications
   },
   {
   path: "/student-edit-profile",
   component: EditProfile
+  },
+  {
+  path: "/job-applications/:jobId",
+  component: JobApplications
   }
+
 
 ]
 

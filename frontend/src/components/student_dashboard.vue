@@ -56,10 +56,10 @@
 
     </div>
 
-    <div class="mt-4">
+    <div class="mt-4 d-flex gap-3 flex-wrap">
 
       <button
-        class="btn btn-primary me-3"
+        class="btn btn-primary"
         @click="$router.push('/student-jobs')"
       >
         View Jobs
@@ -68,19 +68,21 @@
       <button
         class="btn btn-warning"
         @click="$router.push('/my-applications')"
-        >
+      >
         My Applications
-        </button>
+      </button>
 
-        <button
-        class="btn btn-warning"
+      <button
+        class="btn btn-info"
         @click="$router.push('/student-edit-profile')"
-        >
+      >
         Edit Profile
-        </button>
+      </button>
 
-        <br>
-        <br>
+    </div>
+
+    <div class="mt-3">
+
       <button
         class="btn btn-secondary"
         @click="loadStudent"

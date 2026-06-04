@@ -57,7 +57,7 @@
         <label>Salary</label>
 
         <input
-          type="number"
+          type="text"
           v-model="salary"
           class="form-control"
         >
@@ -66,13 +66,12 @@
 
       <div class="mb-3">
 
-        <label>Required Skills</label>
+        <label>Required Skills (Comma Separated)</label>
 
         <input
           type="text"
           v-model="required_skills"
           class="form-control"
-          placeholder="Example: Python, Flask, SQL"
         >
 
       </div>
@@ -115,7 +114,6 @@
           type="text"
           v-model="eligible_department"
           class="form-control"
-          placeholder="Example: CSE"
         >
 
       </div>
@@ -138,10 +136,9 @@
         <label>Eligible Graduation Year</label>
 
         <input
-          type="number"
+          type="text"
           v-model="eligible_batch"
           class="form-control"
-          placeholder="Example: 2026"
         >
 
       </div>
