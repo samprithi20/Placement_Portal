@@ -71,6 +71,51 @@
       </button>
 
     </div>
+    <div
+        v-if="csvData.length"
+        class="card p-3 mt-4"
+      >
+
+        <h4>Exported CSV Preview</h4>
+
+        <table class="table table-bordered mt-3">
+
+          <thead>
+
+            <tr>
+
+              <th
+                v-for="header in csvHeaders"
+                :key="header"
+              >
+                {{ header }}
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr
+              v-for="(row, index) in csvData"
+              :key="index"
+            >
+
+              <td
+                v-for="(cell, i) in row"
+                :key="i"
+              >
+                {{ cell }}
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
 
   </div>
 
@@ -87,7 +132,9 @@ export default {
     return {
 
       applications: [],
-      exportedFile: ""
+      exportedFile: "",
+      csvData: [],
+      csvHeaders: []
 
     }
 
@@ -158,11 +205,20 @@ export default {
       }
     },
 
-    viewCSV() {
+    async viewCSV() {
 
-      window.open(
-        `http://127.0.0.1:5000/exports/${this.exportedFile}`,
-        "_blank"
+      const response = await fetch(
+        `http://127.0.0.1:5000/exports/${this.exportedFile}`
+      )
+
+      const text = await response.text()
+
+      const rows = text.trim().split("\n")
+
+      this.csvHeaders = rows[0].split(",")
+
+      this.csvData = rows.slice(1).map(row =>
+        row.split(",")
       )
     }
 
