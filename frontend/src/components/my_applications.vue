@@ -53,6 +53,25 @@
 
     </div>
 
+    <div class="mt-4 d-flex gap-3 flex-wrap">
+
+      <button
+        class="btn btn-success"
+        @click="exportCSV"
+      >
+        Export Applications CSV
+      </button>
+
+      <button
+        v-if="exportedFile"
+        class="btn btn-primary"
+        @click="viewCSV"
+      >
+        View Exported CSV
+      </button>
+
+    </div>
+
   </div>
 
 </template>
@@ -67,7 +86,8 @@ export default {
 
     return {
 
-      applications: []
+      applications: [],
+      exportedFile: ""
 
     }
 
@@ -94,6 +114,56 @@ export default {
 
       this.applications = data
 
+    },
+
+    async exportCSV() {
+
+      const token = localStorage.getItem("token")
+
+      const response = await fetch(
+        "http://127.0.0.1:5000/student/export-csv",
+        {
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        }
+      )
+
+      const data = await response.json()
+
+      alert(data.message)
+
+      setTimeout(() => {
+        this.checkExportedFile()
+      }, 3000)
+    },
+
+    async checkExportedFile() {
+
+      const token = localStorage.getItem("token")
+
+      const response = await fetch(
+        "http://127.0.0.1:5000/student/check-export",
+        {
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        }
+      )
+
+      const data = await response.json()
+
+      if (data.exists) {
+        this.exportedFile = data.filename
+      }
+    },
+
+    viewCSV() {
+
+      window.open(
+        `http://127.0.0.1:5000/exports/${this.exportedFile}`,
+        "_blank"
+      )
     }
 
   },
@@ -101,6 +171,7 @@ export default {
   mounted() {
 
     this.loadApplications()
+    this.checkExportedFile()
 
   }
 

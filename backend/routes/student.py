@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from extensions import cache, jwt
-
+import os
 from database import db
 
 from models.user import User
@@ -374,10 +374,50 @@ def export_csv():
         student.id
     )
 
+    filename = f"student_{student.id}.csv"
+
     return jsonify({
 
-        "message": "CSV export started",
+        "message": "CSV export started successfully",
 
-        "task_id": task.id
+        "task_id": task.id,
 
+        "file_url": f"http://127.0.0.1:5000/exports/{filename}"
+
+    })
+
+@stu_bp.route("/student/check-export")
+@jwt_required()
+def check_export():
+
+    user_id = get_jwt_identity()
+
+    user = User.query.get(int(user_id))
+
+    if user.role != "student":
+
+        return jsonify({
+            "message": "Unauthorized"
+        }), 403
+
+    student = Student.query.filter_by(
+        user_id=user.id
+    ).first()
+
+    filename = f"student_{student.id}.csv"
+
+    filepath = os.path.join(
+        "exports",
+        filename
+    )
+
+    if os.path.exists(filepath):
+
+        return jsonify({
+            "exists": True,
+            "filename": filename
+        })
+
+    return jsonify({
+        "exists": False
     })

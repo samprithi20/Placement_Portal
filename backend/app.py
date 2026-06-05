@@ -66,6 +66,13 @@ def home():
     #return render_template("login.html")
     return jsonify({"message": "Placement Portal API Running"})
 
+@app.route("/exports/<filename>")
+def download_export(filename):
+
+    return send_from_directory(
+        "exports",
+        filename
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)

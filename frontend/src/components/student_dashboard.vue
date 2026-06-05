@@ -79,6 +79,8 @@
         Edit Profile
       </button>
 
+      
+
     </div>
 
     <div class="mt-3">
@@ -106,7 +108,8 @@ export default {
 
     return {
 
-      student: {}
+      student: {},
+      csvFileUrl: ""
 
     }
 
@@ -134,6 +137,7 @@ export default {
       this.student = data
 
     },
+
 
     logout() {
 

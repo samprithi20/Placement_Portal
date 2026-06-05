@@ -128,15 +128,20 @@ def export_student_csv(student_id):
 
         os.makedirs("exports", exist_ok=True)
 
-        filename = f"exports/student_{student_id}.csv"
+        filename = f"student_{student_id}.csv"
+
+        filepath = os.path.join(
+            "exports",
+            filename
+        )
 
         df.to_csv(
-            filename,
+            filepath,
             index=False
         )
 
         print(
-            f"CSV export completed: {filename}"
+            f"CSV export completed: {filepath}"
         )
 
-    return filename
+    return filepath
