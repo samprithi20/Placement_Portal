@@ -65,7 +65,7 @@
       </button>
 
       <button
-        class="btn btn-warning"
+        class="btn btn-primary"
         @click="$router.push('/all-jobs')"
       >
         View Jobs

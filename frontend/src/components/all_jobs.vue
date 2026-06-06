@@ -16,24 +16,87 @@
     </div>
 
     <div
-      v-for="job in jobs"
-      :key="job.id"
-      class="card p-3 mb-3"
-    >
+        v-for="job in jobs"
+        :key="job.id"
+        class="card p-4 mb-4 shadow-sm"
+      >
 
-      <h5>{{ job.title }}</h5>
+        <h4>{{ job.title }}</h4>
 
-      <p>
-        <strong>Company:</strong>
-        {{ job.company_name }}
-      </p>
+        <p>
+          <strong>Company:</strong>
+          {{ job.company_name }}
+        </p>
 
-      <p>
-        <strong>Salary:</strong>
-        {{ job.salary }}
-      </p>
+        <p>
+          <strong>Description:</strong>
+          {{ job.description }}
+        </p>
 
-    </div>
+        <p>
+          <strong>Location:</strong>
+          {{ job.location }}
+        </p>
+
+        <p>
+          <strong>Salary:</strong>
+          {{ job.salary }}
+        </p>
+
+        <p>
+          <strong>Status:</strong>
+          {{ job.status }}
+        </p>
+
+        <hr>
+
+        <h5>Eligibility Criteria</h5>
+
+        <p>
+          <strong>Eligible Departments:</strong>
+          {{ job.eligible_department }}
+        </p>
+
+        <p>
+          <strong>Eligible Batch:</strong>
+          {{ job.eligible_batch }}
+        </p>
+
+        <p>
+          <strong>Minimum CGPA:</strong>
+          {{ job.minimum_cgpa }}
+        </p>
+
+        <hr>
+
+        <h5>Additional Information</h5>
+
+        <p>
+          <strong>Required Skills:</strong>
+          {{ job.required_skills }}
+        </p>
+
+        <p>
+          <strong>Experience Required:</strong>
+          {{ job.experience_required }}
+        </p>
+
+        <p>
+          <strong>Benefits:</strong>
+          {{ job.benefits }}
+        </p>
+
+        <p>
+          <strong>Application Deadline:</strong>
+          {{ job.application_deadline }}
+        </p>
+
+        <p>
+          <strong>Total Applications:</strong>
+          {{ job.applications }}
+        </p>
+
+      </div>
 
   </div>
 

@@ -170,14 +170,42 @@ def all_jobs():
     for job in jobs:
 
         company = Company.query.get(job.company_id)
+        application_count = Application.query.filter_by(
+            job_id=job.id
+        ).count()
 
         result.append({
+
             "id": job.id,
-            "title": job.title,
+
             "company_name": company.company_name,
+
+            "title": job.title,
+
+            "description": job.description,
+
             "location": job.location,
+
             "salary": job.salary,
-            "status": job.status
+
+            "status": job.status,
+
+            "required_skills": job.required_skills,
+
+            "experience_required": job.experience_required,
+
+            "benefits": job.benefits,
+
+            "eligible_department": job.eligible_department,
+
+            "minimum_cgpa": job.minimum_cgpa,
+
+            "eligible_batch": job.eligible_batch,
+
+            "application_deadline": job.application_deadline,
+
+            "applications": application_count
+
         })
 
     return jsonify(result)
@@ -424,7 +452,8 @@ def all_students():
             "full_name": student.full_name,
             "department": student.department,
             "cgpa": student.cgpa,
-            "graduation_year": student.graduation_year
+            "graduation_year": student.graduation_year,
+            "resume": student.resume
         })
 
     return jsonify(result)
@@ -581,3 +610,4 @@ def get_jobs():
         })
 
     return jsonify(output)
+

@@ -22,6 +22,7 @@ def company_dashboard():
     user = User.query.get(int(user_id))
 
     if user.role != "company":
+
         return jsonify({
             "message": "Unauthorized"
         }), 403
@@ -29,6 +30,25 @@ def company_dashboard():
     company = Company.query.filter_by(
         user_id=user.id
     ).first()
+
+    total_jobs = JobPosition.query.filter_by(
+        company_id=company.id
+    ).count()
+
+    jobs = JobPosition.query.filter_by(
+        company_id=company.id
+    ).all()
+
+    job_ids = [job.id for job in jobs]
+
+    total_applications = Application.query.filter(
+        Application.job_id.in_(job_ids)
+    ).count()
+
+    total_placed = Application.query.filter(
+        Application.job_id.in_(job_ids),
+        Application.status == "placed"
+    ).count()
 
     return jsonify({
 
@@ -44,8 +64,72 @@ def company_dashboard():
 
         "website": company.website,
 
-        "hr_email": company.hr_email
+        "hr_email": company.hr_email,
 
+        "total_jobs": total_jobs,
+
+        "total_applications": total_applications,
+
+        "total_placed": total_placed
+
+    })
+
+@cmp_bp.route("/company/update-profile", methods=["PUT"])
+@jwt_required()
+def update_company_profile():
+
+    user_id = get_jwt_identity()
+
+    user = User.query.get(int(user_id))
+
+    if user.role != "company":
+
+        return jsonify({
+            "message": "Unauthorized"
+        }), 403
+
+    company = Company.query.filter_by(
+        user_id=user.id
+    ).first()
+
+    data = request.json
+
+    company.company_name = data.get(
+        "company_name",
+        company.company_name
+    )
+
+    company.industry = data.get(
+        "industry",
+        company.industry
+    )
+
+    company.location = data.get(
+        "location",
+        company.location
+    )
+
+    company.hr_name = data.get(
+        "hr_name",
+        company.hr_name
+    )
+
+    company.website = data.get(
+        "website",
+        company.website
+    )
+
+    company.hr_email = data.get(
+        "hr_email",
+        company.hr_email
+    )
+
+    db.session.commit()
+
+    cache.clear()
+
+    return jsonify({
+        "message": "Company profile updated successfully"
     })
 
 @cmp_bp.route("/company/create-job", methods=["POST"])
@@ -88,7 +172,8 @@ def create_job():
 
     minimum_cgpa=data.get("minimum_cgpa"),
 
-    eligible_batch=data.get("eligible_batch")
+    eligible_batch=data.get("eligible_batch"),
+    application_deadline=data.get("application_deadline")
     )
 
     db.session.add(job)
@@ -136,7 +221,8 @@ def company_jobs():
             "location": job.location,
             "salary": job.salary,
             "status": job.status,
-            "applications": application_count
+            "applications": application_count,
+            "application_deadline": job.application_deadline
         })
 
     return jsonify(result)
@@ -182,7 +268,11 @@ def job_applications(job_id):
             "department": student.department,
             "cgpa": student.cgpa,
             "status": application.status,
-            "interview_date": application.interview_date
+            "interview_date": application.interview_date,
+            "resume": (
+                f"http://127.0.0.1:5000/uploads/{student.resume}"
+                if student.resume else None
+            )
             
         })
 
@@ -220,7 +310,11 @@ def company_applications():
             "id": app.id,
             "student_name": student.full_name,
             "job_title": job.title,
-            "status": app.status
+            "status": app.status,
+            "resume": (
+                f"http://127.0.0.1:5000/uploads/{student.resume}"
+                if student.resume else None
+            )
         })
 
     return jsonify(result)
@@ -363,4 +457,59 @@ def close_job(job_id):
 
     return jsonify({
         "message": "Job closed successfully"
+    })
+
+@cmp_bp.route("/company/stats")
+@jwt_required()
+def company_stats():
+
+    user_id = get_jwt_identity()
+
+    user = User.query.get(int(user_id))
+
+    if user.role != "company":
+
+        return jsonify({
+            "message": "Unauthorized"
+        }), 403
+
+    company = Company.query.filter_by(
+        user_id=user.id
+    ).first()
+
+    # TOTAL JOBS
+
+    total_jobs = JobPosition.query.filter_by(
+        company_id=company.id
+    ).count()
+
+    # GET ALL JOB IDS
+
+    jobs = JobPosition.query.filter_by(
+        company_id=company.id
+    ).all()
+
+    job_ids = [job.id for job in jobs]
+
+    # TOTAL APPLICATIONS
+
+    total_applications = Application.query.filter(
+        Application.job_id.in_(job_ids)
+    ).count()
+
+    # TOTAL PLACED
+
+    total_placed = Application.query.filter(
+        Application.job_id.in_(job_ids),
+        Application.status == "placed"
+    ).count()
+
+    return jsonify({
+
+        "total_jobs": total_jobs,
+
+        "total_applications": total_applications,
+
+        "total_placed": total_placed
+
     })

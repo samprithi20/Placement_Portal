@@ -37,6 +37,22 @@
         {{ application.status }}
       </p>
 
+      <p>
+        Resume:
+
+        <a
+          v-if="application.resume"
+          :href="application.resume"
+          target="_blank"
+        >
+          View Resume
+        </a>
+
+        <span v-else>
+          No Resume Uploaded
+        </span>
+      </p>
+
     </div>
 
   </div>

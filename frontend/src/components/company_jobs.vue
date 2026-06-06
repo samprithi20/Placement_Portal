@@ -43,6 +43,11 @@
         {{ job.applications }}
       </p>
 
+      <p>
+        Deadline:
+        {{ job.application_deadline }}
+      </p>
+
       <div class="d-flex gap-2">
 
         <button

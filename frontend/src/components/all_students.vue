@@ -38,6 +38,22 @@
         {{ student.graduation_year }}
       </p>
 
+      <p>
+        <strong>Resume:</strong>
+
+        <a
+          v-if="student.resume"
+          :href="'http://127.0.0.1:5000/uploads/' + student.resume"
+          target="_blank"
+        >
+          View Resume
+        </a>
+
+        <span v-else>
+          No Resume Uploaded
+        </span>
+      </p>
+
     </div>
 
   </div>

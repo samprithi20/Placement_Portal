@@ -39,11 +39,7 @@
 
       <p>
         Interview Date:
-        {{
-          application.interview_date !== "Not Scheduled"
-            ? new Date(application.interview_date).toLocaleString()
-            : "Not Scheduled"
-        }}
+        {{ formatDate(application.interview_date) }}
       </p>
 
       <p>
@@ -103,11 +99,17 @@
             >
 
               <td
-                v-for="(cell, i) in row"
-                :key="i"
-              >
-                {{ cell }}
-              </td>
+              v-for="(cell, i) in row"
+              :key="i"
+            >
+
+              {{
+                csvHeaders[i].trim() === "Interview Date"
+                  ? formatDate(cell)
+                  : cell
+              }}
+
+            </td>
 
             </tr>
 
@@ -220,6 +222,29 @@ export default {
       this.csvData = rows.slice(1).map(row =>
         row.split(",")
       )
+    },
+
+    formatDate(dateString) {
+
+      if (!dateString || dateString === "Not Scheduled") {
+
+        return "Not Scheduled"
+
+      }
+
+      const date = new Date(dateString)
+
+      return date.toLocaleString("en-GB", {
+
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+
+        hour: "2-digit",
+        minute: "2-digit"
+
+      })
+
     }
 
   },

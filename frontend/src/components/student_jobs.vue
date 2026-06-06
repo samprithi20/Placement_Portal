@@ -40,6 +40,14 @@
         {{ job.status }}
       </p>
 
+      <p
+        v-if="job.message"
+        class="mt-2 fw-bold"
+        :class="job.applied ? 'text-success' : 'text-danger'"
+      >
+        {{ job.message }}
+      </p>
+
       <button
         class="btn btn-primary"
         @click="applyJob(job.id)"
@@ -93,28 +101,49 @@ export default {
       )
 
       const data = await response.json()
-      this.jobs = data
+      this.jobs = data.map(job => ({
+
+        ...job,
+
+        message: "",
+
+        applied: false
+
+      }))
     },
 
     async applyJob(jobId) {
+
       const token = localStorage.getItem("token")
 
       const response = await fetch(
         `http://127.0.0.1:5000/student/apply/${jobId}`,
         {
+
           method: "POST",
+
           headers: {
             "Authorization": "Bearer " + token
           }
+
         }
       )
 
       const data = await response.json()
-      alert(data.message)
 
-      this.loadJobs()
+      const job = this.jobs.find(
+        j => j.id === jobId
+      )
+
+      job.message = data.message
+
+      if (response.ok) {
+
+        job.applied = true
+
+      }
+
     }
-
   },
 
   mounted() {

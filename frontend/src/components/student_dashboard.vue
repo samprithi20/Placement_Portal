@@ -45,14 +45,19 @@
       <h5>
         Resume:
       </h5>
-
+      <h5>
+        Resume:
       <a
+        v-if="student.resume"
         :href="'http://127.0.0.1:5000/uploads/' + student.resume"
         target="_blank"
-        class="btn btn-primary"
       >
         View Resume
       </a>
+      <span v-else>
+        No Resume Uploaded
+      </span>
+    </h5>
 
     </div>
 
@@ -80,17 +85,6 @@
       </button>
 
       
-
-    </div>
-
-    <div class="mt-3">
-
-      <button
-        class="btn btn-secondary"
-        @click="loadStudent"
-      >
-        Refresh
-      </button>
 
     </div>
 

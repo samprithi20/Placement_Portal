@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from extensions import cache, jwt
 import os
 from database import db
+from datetime import datetime
 
 from models.user import User
 from models.student import Student
@@ -123,16 +124,19 @@ def apply_job(job_id):
 
     user = User.query.get(int(user_id))
 
+    # role check
     if user.role != "student":
 
         return jsonify({
             "message": "Unauthorized"
         }), 403
 
+    # get student
     student = Student.query.filter_by(
         user_id=user.id
     ).first()
 
+    # get job
     job = JobPosition.query.get(job_id)
 
     if not job:
@@ -141,12 +145,14 @@ def apply_job(job_id):
             "message": "Job not found"
         }), 404
 
+    # only approved jobs can be applied
     if job.status != "approved":
 
         return jsonify({
             "message": "Job not open for applications"
         }), 400
 
+    # prevent duplicate applications
     existing_application = Application.query.filter_by(
         student_id=student.id,
         job_id=job.id
@@ -158,19 +164,96 @@ def apply_job(job_id):
             "message": "Already applied"
         }), 400
 
+    # =====================================
+    # DEPARTMENT ELIGIBILITY CHECK
+    # =====================================
+
+    if job.eligible_department:
+
+        eligible_departments = [
+
+            dept.strip().upper()
+
+            for dept in job.eligible_department.split(",")
+
+        ]
+
+        student_department = (
+            student.department.strip().upper()
+        )
+
+        if student_department not in eligible_departments:
+
+            return jsonify({
+                "message": "Department not eligible"
+            }), 400
+
+    # =====================================
+    # BATCH / GRADUATION YEAR CHECK
+    # =====================================
+
+    if job.eligible_batch:
+
+        eligible_batches = [
+
+            batch.strip()
+
+            for batch in job.eligible_batch.split(",")
+
+        ]
+
+        student_batch = str(
+            student.graduation_year
+        ).strip()
+
+        if student_batch not in eligible_batches:
+
+            return jsonify({
+                "message": "Graduation year not eligible"
+            }), 400
+
+    # =====================================
+    # CGPA VALIDATION
+    # =====================================
+
     if (
         job.minimum_cgpa is not None and
         float(student.cgpa) < float(job.minimum_cgpa)
     ):
 
         return jsonify({
-            "message": "Eligibility criteria not matching - Required CGPA not met"
+            "message": "Required CGPA not met"
         }), 400
+
+    # =====================================
+    # APPLICATION DEADLINE CHECK
+    # =====================================
+
+    if job.application_deadline:
+
+        deadline = datetime.strptime(
+            job.application_deadline,
+            "%Y-%m-%d"
+        ).date()
+
+        today = datetime.today().date()
+
+        if today > deadline:
+
+            return jsonify({
+                "message": "Application deadline has passed"
+            }), 400
+
+    # =====================================
+    # CREATE APPLICATION
+    # =====================================
 
     application = Application(
 
         student_id=student.id,
+
         job_id=job.id,
+
         status="applied"
 
     )
@@ -184,7 +267,6 @@ def apply_job(job_id):
     return jsonify({
         "message": "Application submitted successfully"
     })
-
 
 @stu_bp.route("/student/jobs")
 @jwt_required()
