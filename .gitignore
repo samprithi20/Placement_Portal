@@ -5,12 +5,6 @@ __pycache__/
 dist/
 .vscode/
 
-exports/*
-!exports/.gitkeep
-
-reports/*
-!reports/.gitkeep
-
 # Celery Beat scheduler files
 backend/celerybeat-schedule
 backend/celerybeat-schedule.bak
@@ -18,5 +12,3 @@ backend/celerybeat-schedule.dat
 backend/celerybeat-schedule.dir
 celerybeat-schedule.*
 
-uploads/*
-!uploads/.gitkeep

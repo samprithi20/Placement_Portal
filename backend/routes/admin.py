@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from extensions import cache,jwt
 
 from database import db
-
+import os
 from models.user import User
 from models.student import Student
 from models.company import Company
@@ -26,11 +26,13 @@ def admin_dashboard():
         }), 403
 
     total_students = User.query.filter_by(
-        role="student"
+        role="student",
+        is_blacklisted=False
     ).count()
 
     total_companies = User.query.filter_by(
-        role="company"
+        role="company",
+        is_blacklisted=False
     ).count()
 
     total_jobs = JobPosition.query.count()
@@ -255,21 +257,25 @@ def all_applications():
     admin = User.query.get(int(user_id))
 
     if admin.role != "admin":
-        return jsonify({
-            "message": "Unauthorized"
-        }), 403
+        return jsonify({"message": "Unauthorized"}), 403
 
     applications = Application.query.all()
 
     result = []
 
-    for application in applications:
+    for app_obj in applications:
+
+        student = Student.query.get(app_obj.student_id)
+        job = JobPosition.query.get(app_obj.job_id)
+        company = Company.query.get(job.company_id) if job else None
 
         result.append({
-            "id": application.id,
-            "student_id": application.student_id,
-            "job_id": application.job_id,
-            "status": application.status
+            "id": app_obj.id,
+            "student_name": student.full_name if student else "N/A",
+            "company_name": company.company_name if company else "N/A",
+            "job_title": job.title if job else "N/A",
+            "salary": job.salary if job else "N/A",
+            "status": app_obj.status  
         })
 
     return jsonify(result)
@@ -377,18 +383,26 @@ def all_companies():
             "message": "Unauthorized"
         }), 403
 
-    companies = Company.query.all()
+    companies = Company.query.join(
+        User,
+        Company.user_id == User.id
+    ).filter(
+        User.is_blacklisted == False
+    ).all()
 
     result = []
 
     for company in companies:
+        user = User.query.get(company.user_id)
 
         result.append({
             "id": company.id,
+            "user_id": user.id,
             "company_name": company.company_name,
             "industry": company.industry,
             "approval_status": company.approval_status,
-            "location": company.location
+            "location": company.location,
+            "is_active": user.is_active
         })
 
     return jsonify(result)
@@ -441,19 +455,27 @@ def all_students():
             "message": "Unauthorized"
         }), 403
 
-    students = Student.query.all()
+    students = Student.query.join(
+        User,
+        Student.user_id == User.id
+    ).filter(
+        User.is_blacklisted == False
+    ).all()
 
     result = []
 
     for student in students:
+        user = User.query.get(student.user_id)
 
         result.append({
             "id": student.id,
+            "user_id": user.id,
             "full_name": student.full_name,
             "department": student.department,
             "cgpa": student.cgpa,
             "graduation_year": student.graduation_year,
-            "resume": student.resume
+            "resume": student.resume,
+            "is_active": user.is_active
         })
 
     return jsonify(result)
@@ -497,60 +519,49 @@ def search_students():
 @jwt_required()
 def deactivate_user(user_id):
 
-    current_user = User.query.get(
-        int(get_jwt_identity())
-    )
+    admin = User.query.get(int(get_jwt_identity()))
 
-    if current_user.role != "admin":
-        return jsonify({
-            "message": "Unauthorized"
-        }), 403
+    if admin.role != "admin":
+        return jsonify({"message": "Unauthorized"}), 403
 
     user = User.query.get(user_id)
 
     if not user:
-        return jsonify({
-            "message": "User not found"
-        }), 404
+        return jsonify({"message": "User not found"}), 404
 
-    user.is_active = False
+    user.is_active = not user.is_active   # TOGGLE LOGIC
 
     db.session.commit()
 
     cache.clear()
 
     return jsonify({
-        "message": "User deactivated"
+        "message": "User status updated",
+        "is_active": user.is_active
     })
 
 @admin_bp.route("/admin/blacklist-user/<int:user_id>", methods=["PUT"])
 @jwt_required()
 def blacklist_user(user_id):
 
-    current_user = User.query.get(
-        int(get_jwt_identity())
-    )
+    admin = User.query.get(int(get_jwt_identity()))
 
-    if current_user.role != "admin":
-        return jsonify({
-            "message": "Unauthorized"
-        }), 403
+    if admin.role != "admin":
+        return jsonify({"message": "Unauthorized"}), 403
 
     user = User.query.get(user_id)
 
     if not user:
-        return jsonify({
-            "message": "User not found"
-        }), 404
+        return jsonify({"message": "User not found"}), 404
 
     user.is_blacklisted = True
+    user.is_active = False   # force disable also
 
     db.session.commit()
-
     cache.clear()
 
     return jsonify({
-        "message": "User blacklisted successfully"
+        "message": "User permanently blacklisted"
     })
 
 @admin_bp.route("/students", methods=["GET"])
@@ -611,3 +622,112 @@ def get_jobs():
 
     return jsonify(output)
 
+@admin_bp.route("/admin/reports")
+@jwt_required()
+def get_reports():
+
+    print(os.getcwd())
+    print(os.path.exists("reports/monthly_report.html"))
+
+    filename = "monthly_report.html"
+
+    filepath = os.path.join(
+        "reports",
+        filename
+    )
+
+    if os.path.exists(filepath):
+
+        return jsonify({
+            "filename": filename,
+            "url": f"http://127.0.0.1:5000/reports/{filename}"
+        })
+
+    return jsonify({
+        "message": "No report available"
+    }), 404
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@admin_bp.route("/debug-users")
+def debug_users():
+
+    users = User.query.all()
+
+    result = []
+
+    for user in users:
+
+        result.append({
+            "id": user.id,
+            "email": user.email,
+            "role": user.role,
+            "is_active": user.is_active,
+            "is_blacklisted": user.is_blacklisted
+        })
+
+    return jsonify(result)
+
+@admin_bp.route("/unblacklist/<int:user_id>")
+def unblacklist(user_id):
+
+    user = User.query.get(user_id)
+
+    user.is_blacklisted = False
+    user.is_active = True
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "User restored"
+    })
+
+@admin_bp.route("/admin/application-statuses")
+@jwt_required()
+def application_statuses():
+
+    statuses = db.session.query(
+        Application.status
+    ).distinct().all()
+
+    return jsonify([
+        status[0] for status in statuses
+    ])

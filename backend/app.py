@@ -74,5 +74,13 @@ def download_export(filename):
         filename
     )
 
+@app.route("/reports/<filename>")
+def view_report(filename):
+
+    return send_from_directory(
+        "reports",
+        filename
+    )
+
 if __name__ == "__main__":
     app.run(debug=True)

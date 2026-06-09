@@ -10,86 +10,128 @@ from models.job_position import JobPosition
 import pandas as pd
 import os
 #import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 @celery.task
 def send_interview_reminders():
 
-    interviews = [
-        {
-            "student": "Sam",
-            "company": "TCS",
-            "job": "Python Developer",
-            "date": "2026-06-01",
-            "time": "10:00 AM",
-            "email": "sam@example.com"
-        }
-    ]
+    with app.app_context():
 
-    for interview in interviews:
+        applications = Application.query.filter_by(
+            status="interview scheduled"
+        ).all()
 
-        reminder_message = f"""
-                Interview Reminder
+        for application in applications:
 
-                Hello {interview['student']},
+            student = Student.query.get(
+                application.student_id
+            )
 
-                This is a reminder for your upcoming interview.
+            job = JobPosition.query.get(
+                application.job_id
+            )
 
-                Company: {interview['company']}
-                Role: {interview['job']}
-                Date: {interview['date']}
-                Time: {interview['time']}
+            company = Company.query.get(
+                job.company_id
+            )
 
-                Best of luck!
+            reminder_message = f"""
+            Interview Reminder
 
-                Placement Portal
-                """
+            Student: {student.full_name}
 
-        print(reminder_message)
+            Company: {company.company_name}
+
+            Job Role: {job.title}
+
+            Interview Date:
+            {application.interview_date}
+            """
+
+            print(reminder_message)
 
     return "Interview reminders sent"
-
 
 @celery.task
 def generate_monthly_report():
 
-    report_html = """
-    <html>
-    <head>
-        <title>Placement Report</title>
-    </head>
+    with app.app_context():
 
-    <body>
+        companies = Company.query.all()
 
-        <h1>Monthly Placement Report</h1>
+        report_html = """
+        <html>
+        <head>
+            <title>Monthly Placement Report</title>
+        </head>
 
-        <hr>
+        <body>
 
-        <h2>Company: TCS</h2>
+            <h1>Monthly Placement Report</h1>
 
-        <p>Total Applications: 120</p>
+            <hr>
+        """
 
-        <p>Students Shortlisted: 45</p>
+        for company in companies:
 
-        <p>Students Placed: 20</p>
+            jobs = JobPosition.query.filter_by(
+                company_id=company.id
+            ).all()
 
-        <p>Average Package: 8 LPA</p>
+            job_ids = [job.id for job in jobs]
 
-    </body>
-    </html>
-    """
+            total_applications = 0
+            total_placed = 0
 
-    os.makedirs("reports", exist_ok=True)
+            if job_ids:
 
-    filename = f"reports/report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+                total_applications = Application.query.filter(
+                    Application.job_id.in_(job_ids)
+                ).count()
 
-    with open(filename, "w", encoding="utf-8") as file:
-        file.write(report_html)
+                total_placed = Application.query.filter(
+                    Application.job_id.in_(job_ids),
+                    Application.status == "placed"
+                ).count()
 
-    print(f"Placement report generated: {filename}")
+            report_html += f"""
+                <h2>Company: {company.company_name}</h2>
 
-    return filename
+                <p>Total Jobs: {len(jobs)}</p>
+
+                <p>Total Applications: {total_applications}</p>
+
+                <p>Total Placed Students: {total_placed}</p>
+
+                <hr>
+            """
+
+        report_html += """
+        </body>
+        </html>
+        """
+
+        os.makedirs(
+            "reports",
+            exist_ok=True
+        )
+
+        filename = "reports/monthly_report.html"
+
+        with open(
+            filename,
+            "w",
+            encoding="utf-8"
+        ) as file:
+
+            file.write(report_html)
+
+        print(
+            f"Placement report generated: {filename}"
+        )
+
+        return filename
 
 
 @celery.task(name="tasks.export_student_csv")

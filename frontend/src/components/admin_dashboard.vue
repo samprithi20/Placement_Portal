@@ -71,6 +71,13 @@
         View Jobs
       </button>
 
+      <button
+        class="btn btn-info"
+        @click="$router.push('/reports')"
+      >
+        View Reports
+      </button>
+
     </div>
 
     <h3 class="mb-3">
@@ -106,7 +113,14 @@
         class="btn btn-success"
         @click="approveCompany(company.id)"
       >
-        Approve Company
+        Approve
+      </button>
+      <br>
+      <button
+        class="btn btn-danger"
+        @click="rejectCompany(company.id)"
+      >
+        Reject
       </button>
 
     </div>
@@ -260,6 +274,27 @@ export default {
 
       this.loadPendingCompanies()
 
+    },
+    async rejectCompany(companyId) {
+
+      const token = localStorage.getItem("token")
+
+      const response = await fetch(
+        `http://127.0.0.1:5000/admin/reject-company/${companyId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        }
+      )
+
+      const data = await response.json()
+
+      alert(data.message)
+
+      this.loadDashboard()
+      this.loadPendingCompanies()
     },
 
     async loadPendingJobs() {

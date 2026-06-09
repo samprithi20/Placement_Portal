@@ -155,6 +155,9 @@ def login():
         return jsonify({
             "message": "User is blacklisted"
         }), 403
+    
+    if user.is_blacklisted or not user.is_active:
+        return jsonify({"message": "Access denied"}), 403
 
     if user.role == "company":
         company = Company.query.filter_by(

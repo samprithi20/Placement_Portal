@@ -39,6 +39,18 @@
       </p>
 
       <p>
+        <strong>Status:</strong>
+
+        <span v-if="student.is_active" class="text-success">
+          Active
+        </span>
+
+        <span v-else class="text-danger">
+          Deactivated
+        </span>
+      </p>
+
+      <p>
         <strong>Resume:</strong>
 
         <a
@@ -54,7 +66,21 @@
         </span>
       </p>
 
+      <div class="d-flex gap-2 mt-2">
+
+      <button class="btn btn-warning" @click="deactivateactivate(student.user_id)">
+        Deactivate / Activate
+      </button>
+
+      <button class="btn btn-danger" @click="blacklist(student.user_id)">
+        Blacklist
+      </button>
+
     </div>
+
+    </div>
+
+    
 
   </div>
 
@@ -97,6 +123,45 @@ export default {
 
       this.students = data
 
+    },
+    async deactivateactivate(userId) {
+
+      const token = localStorage.getItem("token")
+
+      const res = await fetch(
+        `http://127.0.0.1:5000/admin/deactivate-user/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        }
+      )
+
+      const data = await res.json()
+      alert(data.message)
+
+      this.loadStudents()
+    },
+
+    async blacklist(userId) {
+
+      const token = localStorage.getItem("token")
+
+      const res = await fetch(
+        `http://127.0.0.1:5000/admin/blacklist-user/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        }
+      )
+
+      const data = await res.json()
+      alert(data.message)
+
+      this.loadStudents()
     }
 
   },

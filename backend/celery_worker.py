@@ -15,7 +15,7 @@ celery.conf.beat_schedule = {
 
         "task": "tasks.send_interview_reminders",
 
-        "schedule": 60.0
+        "schedule": 10.0
     },
 
     "monthly-placement-report": {

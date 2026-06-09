@@ -33,7 +33,33 @@
         {{ company.approval_status }}
       </p>
 
+      <p>
+        <strong>Status:</strong>
+
+        <span v-if="company.is_active" class="text-success">
+          Active
+        </span>
+
+        <span v-else class="text-danger">
+          Deactivated
+        </span>
+      </p>
+
+      <div class="d-flex gap-2 mt-2">
+
+        <button class="btn btn-warning" @click="deactivateactivate(company.user_id)">
+          Deactivate / Activate
+        </button>
+
+        <button class="btn btn-danger" @click="blacklistCompany(company.user_id)">
+          Blacklist
+        </button>
+
+      </div>
+
     </div>
+
+    
 
   </div>
 
@@ -76,6 +102,46 @@ export default {
 
       this.companies = data
 
+    },
+
+    async deactivateactivate(companyId) {
+
+      const token = localStorage.getItem("token")
+
+      const res = await fetch(
+        `http://127.0.0.1:5000/admin/deactivate-user/${companyId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        }
+      )
+
+      const data = await res.json()
+      alert(data.message)
+
+      this.loadCompanies()
+    },
+
+    async blacklistCompany(companyId) {
+
+      const token = localStorage.getItem("token")
+
+      const res = await fetch(
+        `http://127.0.0.1:5000/admin/blacklist-user/${companyId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        }
+      )
+
+      const data = await res.json()
+      alert(data.message)
+
+      this.loadCompanies()
     }
 
   },
