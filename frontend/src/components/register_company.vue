@@ -62,9 +62,7 @@ export default {
   name: "RegisterCompany",
 
   data() {
-
     return {
-
       company_name: "",
       email: "",
       password: "",
@@ -73,7 +71,6 @@ export default {
       website: "",
       hr_name: "",
       hr_email: ""
-
     }
 
   },
@@ -81,7 +78,6 @@ export default {
   methods: {
 
     async registerCompany() {
-
       const response = await fetch(
         "http://127.0.0.1:5000/register/company",
         {
@@ -122,6 +118,3 @@ export default {
 
 </script>
 
-<style scoped>
-
-</style>

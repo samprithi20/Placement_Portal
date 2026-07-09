@@ -64,17 +64,15 @@
         }}
       </button>
 
-      <p
-        v-if="!job.is_eligible"
-        class="text-danger mt-2"
-      >
-        Eligibility criteria not matching
+      <p v-if="!job.is_eligible" class="text-danger mt-2">
+        {{ job.eligibility_message || "Eligibility criteria not matching" }}
       </p>
 
     </div>
 
   </div>
 </template>
+
 
 <script>
 export default {
@@ -101,19 +99,12 @@ export default {
       )
 
       const data = await response.json()
-      this.jobs = data.map(job => ({
-
-        ...job,
-
-        message: "",
-
-        applied: false
-
+      this.jobs = data.map(job => ({...job,
+        message: ""
       }))
     },
 
     async applyJob(jobId) {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -121,7 +112,6 @@ export default {
         {
 
           method: "POST",
-
           headers: {
             "Authorization": "Bearer " + token
           }

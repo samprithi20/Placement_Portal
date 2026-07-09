@@ -7,21 +7,16 @@
 
       <h2>Job Applications</h2>
 
-      <button
-        class="btn btn-secondary"
+      <button class="btn btn-secondary"
         @click="$router.push('/company-jobs')"
-      >
-        Back
-      </button>
+      > Back </button>
 
     </div>
 
-    <div
-      v-for="application in applications"
+    <div v-for="application in applications"
       :key="application.application_id"
       class="card p-3 mb-3"
     >
-
       <h5>
         {{ application.student_name }}
       </h5>
@@ -36,8 +31,7 @@
         {{ application.cgpa }}
       </p>
 
-      <p>
-        Resume:
+      <p>Resume:
         <a
           :href="application.resume"
           target="_blank"
@@ -64,8 +58,6 @@
             : "Not Scheduled"
         }}
       </p>
-
-
       <div class="mt-3">
 
         <label>Feedback</label>
@@ -78,20 +70,17 @@
 
       </div>
 
-
       <div
         v-if="application.status === 'applied'"
         class="mt-3"
       >
-
         <input
           type="datetime-local"
           v-model="application.scheduled_date"
           class="form-control mb-2"
         >
 
-        <button
-          class="btn btn-warning"
+        <button class="btn btn-warning"
           @click="scheduleInterview(application)"
         >
           Schedule Interview
@@ -99,16 +88,13 @@
 
       </div>
 
-
-      <div
-        v-if="
+      <div v-if="
           application.status === 'interview scheduled' ||
           application.status === 'placed' ||
           application.status === 'rejected'
         "
         class="d-flex gap-2 flex-wrap mt-3"
       >
-
         <button
           class="btn btn-danger"
           @click="updateStatus(application, 'rejected')"
@@ -116,8 +102,7 @@
           Reject
         </button>
 
-        <button
-          class="btn btn-success"
+        <button class="btn btn-success"
           @click="updateStatus(application, 'placed')"
         >
           Place
@@ -140,9 +125,7 @@ export default {
   data() {
 
     return {
-
       applications: []
-
     }
 
   },
@@ -150,11 +133,8 @@ export default {
   methods: {
 
     async loadApplications() {
-
       const token = localStorage.getItem("token")
-
       const jobId = this.$route.params.jobId
-
       const response = await fetch(
         `http://127.0.0.1:5000/company/job-applications/${jobId}`,
         {
@@ -173,15 +153,12 @@ export default {
     },
 
     async updateStatus(application, status) {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
         `http://127.0.0.1:5000/company/update-application/${application.application_id}`,
         {
-
           method: "PUT",
-
           headers: {
 
             "Content-Type": "application/json",
@@ -210,9 +187,7 @@ export default {
     },
 
     async scheduleInterview(application) {
-
       const token = localStorage.getItem("token")
-
       const response = await fetch(
         `http://127.0.0.1:5000/company/schedule-interview/${application.application_id}`,
         {
@@ -228,7 +203,6 @@ export default {
           },
 
           body: JSON.stringify({
-
             interview_date: application.scheduled_date
 
           })
@@ -247,7 +221,6 @@ export default {
   },
 
   mounted() {
-
     this.loadApplications()
 
   }
@@ -267,4 +240,4 @@ textarea {
 }
 
 </style>
-```
+

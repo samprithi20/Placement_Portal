@@ -68,8 +68,9 @@
 
       <div class="d-flex gap-2 mt-2">
 
-      <button class="btn btn-warning" @click="deactivateactivate(student.user_id)">
-        Deactivate / Activate
+      <button class="btn btn-warning"
+        @click="deactivateUser(student.user_id)">
+        {{ student.is_active ? "Deactivate" : "Activate" }}
       </button>
 
       <button class="btn btn-danger" @click="blacklist(student.user_id)">
@@ -79,8 +80,6 @@
     </div>
 
     </div>
-
-    
 
   </div>
 
@@ -105,7 +104,6 @@ export default {
   methods: {
 
     async loadStudents() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -125,7 +123,6 @@ export default {
 
     },
     async deactivateactivate(userId) {
-
       const token = localStorage.getItem("token")
 
       const res = await fetch(
@@ -145,7 +142,6 @@ export default {
     },
 
     async blacklist(userId) {
-
       const token = localStorage.getItem("token")
 
       const res = await fetch(

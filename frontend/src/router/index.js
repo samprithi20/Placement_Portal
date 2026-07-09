@@ -32,13 +32,9 @@ import EditProfile from "../components/student_edit_profile.vue"
 
 import JobApplications from "../components/job_applications.vue"
 
-import CompanyEditProfile from "../components/company_edit_profile.vue"
-
 import Report from "../components/reports.vue"
 
-
 const routes = [
-
   {
     path: "/",
     component: Login
@@ -117,10 +113,6 @@ const routes = [
   component: JobApplications
   },
 
-  {
-  path: "/company-edit-profile",
-  component: CompanyEditProfile
-  },
   {
     path: "/reports",
     component: Report

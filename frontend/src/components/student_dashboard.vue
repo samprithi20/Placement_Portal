@@ -44,9 +44,6 @@
 
       <h5>
         Resume:
-      </h5>
-      <h5>
-        Resume:
       <a
         v-if="student.resume"
         :href="'http://127.0.0.1:5000/uploads/' + student.resume"
@@ -112,7 +109,6 @@ export default {
   methods: {
 
     async loadStudent() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -136,9 +132,7 @@ export default {
     logout() {
 
       localStorage.removeItem("token")
-
       localStorage.removeItem("role")
-
       this.$router.push("/")
 
     }
@@ -154,7 +148,3 @@ export default {
 }
 
 </script>
-
-<style scoped>
-
-</style>

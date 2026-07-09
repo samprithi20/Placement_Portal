@@ -1,21 +1,21 @@
 <template>
 
 <div class="container mt-5">
-
+  <div class="d-flex justify-content-between mb-4">
   <h2>Generated Report</h2>
-
+  <button class="btn btn-secondary"
+  @click="$router.push('/admin')">Back</button>
+    </div>
   <div
     v-if="report.filename"
     class="card p-3"
   >
-
     <h5>{{ report.filename }}</h5>
 
     <a
       :href="report.url"
       target="_blank"
-      class="btn btn-primary"
-    >
+      class="btn btn-primary">
       Open Report
     </a>
 
@@ -32,9 +32,12 @@
 
 </template>
 
+
+
 <script>
 
 export default {
+  name : "Report",
 
   data() {
 

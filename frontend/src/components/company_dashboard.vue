@@ -15,7 +15,6 @@
 
     </div>
 
-    <!-- COMPANY DETAILS -->
 
     <div class="card p-4 mb-4">
 
@@ -38,7 +37,7 @@
 
       </div>
 
-      <!-- VIEW MODE -->
+   
 
       <div v-if="!editMode">
 
@@ -78,8 +77,6 @@
         </h5>
 
       </div>
-
-      <!-- EDIT MODE -->
 
       <div v-else>
 
@@ -178,8 +175,6 @@
 
     </div>
 
-    <!-- STATS -->
-
     <div class="row mb-4">
 
       <div class="col-md-4">
@@ -220,7 +215,6 @@
 
     </div>
 
-    <!-- ACTION BUTTONS -->
 
     <div class="d-flex gap-3 flex-wrap">
 
@@ -302,45 +296,25 @@ export default {
 
       this.company = data
 
+      this.stats = {
+        total_jobs: data.total_jobs,
+        total_applications: data.total_applications,
+        total_placed: data.total_placed
+      }
+
       this.editCompany = {
         ...data
       }
 
     },
 
-    async loadStats() {
-
-      const token = localStorage.getItem("token")
-
-      const response = await fetch(
-        "http://127.0.0.1:5000/company/stats",
-        {
-
-          headers: {
-            "Authorization": "Bearer " + token
-          }
-
-        }
-      )
-
-      const data = await response.json()
-
-      this.stats = data
-
-    },
-
     toggleEdit() {
-
       this.editMode = !this.editMode
 
-      this.editCompany = {
-        ...this.company
-      }
-
+      this.editCompany = {...this.company}
     },
 
     async updateProfile() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -373,7 +347,6 @@ export default {
     },
 
     logout() {
-
       localStorage.removeItem("token")
 
       localStorage.removeItem("role")
@@ -385,11 +358,7 @@ export default {
   },
 
   mounted() {
-
     this.loadCompany()
-
-    this.loadStats()
-
   }
 
 }
@@ -397,7 +366,6 @@ export default {
 </script>
 
 <style scoped>
-
 .card {
   border-radius: 12px;
 }

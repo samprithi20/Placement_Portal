@@ -30,7 +30,4 @@ class JobPosition(db.Model):
 
     eligible_batch = db.Column(db.String(100))
 
-    application_deadline = db.Column(
-    db.String,
-    nullable=True
-    )
+    application_deadline = db.Column(db.String, nullable=True)

@@ -121,7 +121,6 @@ export default {
   methods: {
 
     async loadJobs() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -144,9 +143,7 @@ export default {
   },
 
   mounted() {
-
     this.loadJobs()
-
   }
 
 }

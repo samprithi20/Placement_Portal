@@ -162,7 +162,6 @@ export default {
   methods: {
 
     async loadProfile() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -191,9 +190,6 @@ export default {
     async updateProfile() {
 
       const token = localStorage.getItem("token")
-
-      // UPDATE PROFILE
-
       const response = await fetch(
         "http://127.0.0.1:5000/student/update-profile",
         {
@@ -215,10 +211,7 @@ export default {
 
       const data = await response.json()
 
-      // UPLOAD RESUME
-
       if (this.resumeFile) {
-
         const formData = new FormData()
 
         formData.append(
@@ -252,7 +245,6 @@ export default {
   },
 
   mounted() {
-
     this.loadProfile()
 
   }

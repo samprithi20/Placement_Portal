@@ -1,11 +1,10 @@
 node_modules/
 __pycache__/
 *.pyc
-*.db
+
 dist/
 .vscode/
 
-# Celery Beat scheduler files
 backend/celerybeat-schedule
 backend/celerybeat-schedule.bak
 backend/celerybeat-schedule.dat

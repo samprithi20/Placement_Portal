@@ -1,4 +1,3 @@
-```vue
 <template>
 
   <div class="container mt-5">
@@ -169,7 +168,6 @@ export default {
     },
 
     async registerStudent() {
-
       const formData = new FormData()
 
       formData.append(
@@ -251,7 +249,4 @@ export default {
 
 </script>
 
-<style scoped>
 
-</style>
-```

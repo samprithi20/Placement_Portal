@@ -16,7 +16,6 @@
     </div>
 
     <div class="card p-4">
-
       <div class="mb-3">
 
         <label>Job Title</label>
@@ -97,7 +96,6 @@
           v-model="benefits"
           class="form-control"
         >
-
       </div>
 
       <hr>
@@ -107,11 +105,9 @@
       </h4>
 
       <div class="mb-3">
-
         <label>Eligible Department</label>
 
-        <input
-          type="text"
+        <input type="text"
           v-model="eligible_department"
           class="form-control"
         >
@@ -119,7 +115,6 @@
       </div>
 
       <div class="mb-3">
-
         <label>Minimum CGPA</label>
 
         <input
@@ -132,7 +127,6 @@
       </div>
 
       <div class="mb-3">
-
         <label>Eligible Graduation Year</label>
 
         <input
@@ -144,7 +138,6 @@
       </div>
 
       <div class="mb-3">
-
         <label>Application Deadline</label>
 
         <input
@@ -155,15 +148,10 @@
 
       </div>
 
-      <button
-        class="btn btn-primary"
+      <button class="btn btn-primary"
         @click="postJob"
-      >
-        Create Placement Drive
-      </button>
-
+      > Create Placement Drive </button>
     </div>
-
   </div>
 
 </template>
@@ -177,7 +165,6 @@ export default {
   data() {
 
     return {
-
       title: "",
       description: "",
       location: "",
@@ -185,20 +172,16 @@ export default {
       required_skills: "",
       experience_required: "",
       benefits: "",
-
       eligible_department: "",
       minimum_cgpa: "",
       eligible_batch: "",
       application_deadline: ""
-
     }
-
   },
 
   methods: {
 
     async postJob() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -216,31 +199,18 @@ export default {
           },
 
           body: JSON.stringify({
-
             title: this.title,
-
             description: this.description,
-
             location: this.location,
-
             salary: this.salary,
-
             required_skills: this.required_skills,
-
             experience_required: this.experience_required,
-
             benefits: this.benefits,
-
             eligible_department: this.eligible_department,
-
             minimum_cgpa: this.minimum_cgpa,
-
             eligible_batch: this.eligible_batch,
-
             application_deadline: this.application_deadline
-
           })
-
         }
       )
 
@@ -249,9 +219,7 @@ export default {
       alert(data.message)
 
       if (response.ok) {
-
         this.$router.push("/company")
-
       }
 
     }

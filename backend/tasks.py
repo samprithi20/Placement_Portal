@@ -1,5 +1,4 @@
 from celery_worker import celery
-
 from app import app
 
 from models.application import Application
@@ -9,21 +8,20 @@ from models.job_position import JobPosition
 
 import pandas as pd
 import os
-#import os
-from datetime import datetime, timedelta
-
 
 @celery.task
 def send_interview_reminders():
-
     with app.app_context():
 
         applications = Application.query.filter_by(
             status="interview scheduled"
         ).all()
 
-        for application in applications:
+        if not applications:
+            print("No interview reminders available")
+            return "No interview reminders available"
 
+        for application in applications:
             student = Student.query.get(
                 application.student_id
             )
@@ -37,17 +35,12 @@ def send_interview_reminders():
             )
 
             reminder_message = f"""
-            Interview Reminder
-
-            Student: {student.full_name}
-
-            Company: {company.company_name}
-
-            Job Role: {job.title}
-
-            Interview Date:
-            {application.interview_date}
-            """
+                Interview Reminder
+                Student: {student.full_name}
+                Company: {company.company_name}
+                Job Role: {job.title}
+                Interview Date: {application.interview_date}
+                """
 
             print(reminder_message)
 
@@ -55,9 +48,7 @@ def send_interview_reminders():
 
 @celery.task
 def generate_monthly_report():
-
     with app.app_context():
-
         companies = Company.query.all()
 
         report_html = """
@@ -74,7 +65,6 @@ def generate_monthly_report():
         """
 
         for company in companies:
-
             jobs = JobPosition.query.filter_by(
                 company_id=company.id
             ).all()
@@ -126,19 +116,12 @@ def generate_monthly_report():
         ) as file:
 
             file.write(report_html)
-
-        print(
-            f"Placement report generated: {filename}"
-        )
-
         return filename
 
 
 @celery.task(name="tasks.export_student_csv")
 def export_student_csv(student_id):
-
     with app.app_context():
-
         applications = Application.query.filter_by(
             student_id=student_id
         ).all()
@@ -171,7 +154,6 @@ def export_student_csv(student_id):
         os.makedirs("exports", exist_ok=True)
 
         filename = f"student_{student_id}.csv"
-
         filepath = os.path.join(
             "exports",
             filename
@@ -180,10 +162,6 @@ def export_student_csv(student_id):
         df.to_csv(
             filepath,
             index=False
-        )
-
-        print(
-            f"CSV export completed: {filepath}"
         )
 
     return filepath

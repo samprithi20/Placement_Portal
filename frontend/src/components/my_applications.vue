@@ -9,8 +9,7 @@
       <button
         class="btn btn-secondary"
         @click="$router.push('/student')"
-      >
-        Back
+      >Back
       </button>
 
     </div>
@@ -100,12 +99,10 @@
 
               <td
               v-for="(cell, i) in row"
-              :key="i"
-            >
-
+              :key="i">
               {{
                 csvHeaders[i].trim() === "Interview Date"
-                  ? formatDate(cell)
+                  ? formatDate(cell.trim())
                   : cell
               }}
 
@@ -145,7 +142,6 @@ export default {
   methods: {
 
     async loadApplications() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -166,7 +162,6 @@ export default {
     },
 
     async exportCSV() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -188,7 +183,6 @@ export default {
     },
 
     async checkExportedFile() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -208,7 +202,6 @@ export default {
     },
 
     async viewCSV() {
-
       const response = await fetch(
         `http://127.0.0.1:5000/exports/${this.exportedFile}`
       )
@@ -250,7 +243,6 @@ export default {
   },
 
   mounted() {
-
     this.loadApplications()
     this.checkExportedFile()
 

@@ -82,7 +82,6 @@ export default {
   methods: {
 
     async login() {
-
       const response = await fetch(
         "http://127.0.0.1:5000/login",
         {
@@ -141,7 +140,3 @@ export default {
 }
 
 </script>
-
-<style scoped>
-
-</style>

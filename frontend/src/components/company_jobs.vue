@@ -75,7 +75,6 @@
 <script>
 
 export default {
-
   name: "CompanyJobs",
 
   data() {
@@ -91,7 +90,6 @@ export default {
   methods: {
 
     async loadJobs() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -112,7 +110,6 @@ export default {
     },
 
     viewApplications(jobId) {
-
       this.$router.push(
         `/job-applications/${jobId}`
       )
@@ -120,7 +117,6 @@ export default {
     },
 
     async closeJob(jobId) {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
@@ -139,7 +135,6 @@ export default {
       const data = await response.json()
 
       alert(data.message)
-
       this.loadJobs()
 
     }
@@ -147,9 +142,7 @@ export default {
   },
 
   mounted() {
-
     this.loadJobs()
-
   }
 
 }

@@ -1,5 +1,4 @@
 from flask import Flask, jsonify
-import os
 from flask_cors import CORS
 from config import Config
 from database import db
@@ -36,20 +35,16 @@ app.register_blueprint(stu_bp)
 app.register_blueprint(cmp_bp)
 
 with app.app_context():
-
     db.create_all()
-
     admin_exists = User.query.filter_by(
         role="admin"
     ).first()
-
     if not admin_exists:
         admin = User(
             email="admin@ppa.com",
             password="admin123",
             role="admin"
         )
-
         db.session.add(admin)
         db.session.commit()
 
@@ -63,12 +58,10 @@ def uploaded_file(filename):
 
 @app.route("/")
 def home():
-    #return render_template("login.html")
     return jsonify({"message": "Placement Portal API Running"})
 
 @app.route("/exports/<filename>")
 def download_export(filename):
-
     return send_from_directory(
         "exports",
         filename
@@ -76,7 +69,6 @@ def download_export(filename):
 
 @app.route("/reports/<filename>")
 def view_report(filename):
-
     return send_from_directory(
         "reports",
         filename

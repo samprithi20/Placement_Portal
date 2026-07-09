@@ -2,7 +2,6 @@
 
   <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-
       <h2 class="m-0">Applications</h2>
 
       <button
@@ -13,15 +12,11 @@
       </button>
 
     </div>
-
-    
     <div
       v-for="application in applications"
       :key="application.id"
       class="card p-3 mt-3"
     >
-
-
       <h5>
         Student:
         {{ application.student_name }}
@@ -39,9 +34,7 @@
 
       <p>
         Resume:
-
-        <a
-          v-if="application.resume"
+        <a v-if="application.resume"
           :href="application.resume"
           target="_blank"
         >
@@ -78,7 +71,6 @@ export default {
   methods: {
 
     async loadApplications() {
-
       const token = localStorage.getItem("token")
 
       const response = await fetch(
