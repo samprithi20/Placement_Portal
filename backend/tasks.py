@@ -7,6 +7,7 @@ from models.company import Company
 from models.job_position import JobPosition
 
 import pandas as pd
+
 import os
 
 @celery.task
@@ -31,8 +32,7 @@ def send_interview_reminders():
             )
 
             company = Company.query.get(
-                job.company_id
-            )
+                job.company_id)
 
             reminder_message = f"""
                 Interview Reminder
@@ -82,8 +82,7 @@ def generate_monthly_report():
 
                 total_placed = Application.query.filter(
                     Application.job_id.in_(job_ids),
-                    Application.status == "placed"
-                ).count()
+                    Application.status == "placed").count()
 
             report_html += f"""
                 <h2>Company: {company.company_name}</h2>
@@ -94,14 +93,11 @@ def generate_monthly_report():
 
                 <p>Total Placed Students: {total_placed}</p>
 
-                <hr>
-            """
+                <hr>"""
 
         report_html += """
         </body>
-        </html>
-        """
-
+        </html>"""
         os.makedirs(
             "reports",
             exist_ok=True

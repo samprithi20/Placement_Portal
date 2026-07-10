@@ -109,8 +109,7 @@ def update_company_profile():
     cache.clear()
 
     return jsonify({
-        "message": "Company profile updated successfully"
-    })
+        "message": "Company profile updated successfully"})
 
 @cmp_bp.route("/company/create-job", methods=["POST"])
 @jwt_required()
@@ -319,8 +318,7 @@ def update_application(application_id):
         job = JobPosition.query.get(application.job_id)
         existing_placement = Placement.query.filter_by(
             student_id=application.student_id,
-            company_id=job.company_id
-        ).first()
+            company_id=job.company_id).first()
 
         if not existing_placement:
             placement = Placement(
@@ -378,8 +376,7 @@ def close_job(job_id):
 
     if user.role != "company":
         return jsonify({
-            "message": "Unauthorized"
-        }), 403
+            "message": "Unauthorized"}), 403
 
     job = JobPosition.query.get(job_id)
 
@@ -393,5 +390,4 @@ def close_job(job_id):
     cache.clear()
 
     return jsonify({
-        "message": "Job closed successfully"
-    })
+        "message": "Job closed successfully"})

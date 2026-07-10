@@ -1,13 +1,10 @@
 # Placement Portal Application
 
-Placement Portal Application built using:
-- Flask
-- VueJS
-- SQLite
-- Redis
-- Celery
+A simple placement portal management app to track down the placement progress of a student, that is built using Vue for frontend and Flask for backend. 
 
-Roles:
+Roles include:
 - Admin
 - Company
 - Student
+
+Developed by  **Samprithi S** as a part of MAD 2 course. 

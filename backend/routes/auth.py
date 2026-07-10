@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token
 from extensions import cache
 from werkzeug.utils import secure_filename
+
 import os
 from database import db
 from models.user import User
@@ -19,15 +20,12 @@ def register_student():
     ).first()
 
     if existing_user:
-        return jsonify({
-            "message": "Email already exists"
-        }), 400
+        return jsonify({ "message": "Email already exists"}), 400
 
     user = User(
         email=data["email"],
         password=data["password"],
-        role="student"
-    )
+        role="student")
 
     db.session.add(user)
     db.session.commit()
@@ -39,9 +37,7 @@ def register_student():
         if file.filename != "":
             filename = secure_filename(file.filename)
             upload_path = os.path.join(
-                "uploads",
-                filename
-            )
+                "uploads",filename)
 
             file.save(upload_path)
             resume_filename = filename
@@ -61,8 +57,7 @@ def register_student():
     db.session.commit()
     cache.clear()
     return jsonify({
-        "message": "Student registered successfully"
-    })
+        "message": "Student registered successfully"})
 
 @auth_bp.route("/register/company", methods=["POST"])
 def register_company():
@@ -72,14 +67,12 @@ def register_company():
     ).first()
     if existing_user:
         return jsonify({
-            "message": "Email already exists"
-        }), 400
+            "message": "Email already exists"}), 400
 
     user = User(
         email=data["email"],
         password=data["password"],
-        role="company"
-    )
+        role="company")
 
     db.session.add(user)
     db.session.commit()
@@ -92,16 +85,14 @@ def register_company():
         website=data.get("website"),
         hr_name=data.get("hr_name"),
         hr_email=data.get("hr_email"),
-        approval_status="pending"
-    )
+        approval_status="pending")
 
     db.session.add(company)
     db.session.commit()
     cache.clear()
 
     return jsonify({
-        "message": "Company registered. Waiting for admin approval."
-    })
+        "message": "Company registered. Waiting for admin approval."})
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
@@ -131,15 +122,12 @@ def login():
 
         if company.approval_status != "approved":
             return jsonify({
-                "message": "Company not approved by admin"
-            }), 403
+                "message": "Company not approved by admin"}), 403
 
     access_token = create_access_token(
-        identity=str(user.id)
-    )
+        identity=str(user.id))
 
     return jsonify({
         "token": access_token,
         "role": user.role,
-        "message": "Login successful"
-    })
+        "message": "Login successful"})

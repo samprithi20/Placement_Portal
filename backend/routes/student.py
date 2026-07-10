@@ -279,8 +279,7 @@ def approved_jobs():
             "applied": bool(existing_application),
             "application_status": existing_application.status if existing_application else "",
             "is_eligible": is_eligible,
-            "eligibility_message": eligibility_message
-        })
+            "eligibility_message": eligibility_message})
 
     return jsonify(result)
 
@@ -327,9 +326,7 @@ def my_applications():
             "feedback": (
                 application.feedback
                 if application.feedback
-                else "No Feedback Yet"
-            )
-        })
+                else "No Feedback Yet")})
 
     return jsonify(result)
 
@@ -359,8 +356,7 @@ def export_csv():
     return jsonify({
         "message": "CSV export started successfully",
         "task_id": task.id,
-        "file_url": f"http://127.0.0.1:5000/exports/{filename}"
-    })
+        "file_url": f"http://127.0.0.1:5000/exports/{filename}"})
 
 @stu_bp.route("/student/check-export")
 @jwt_required()
@@ -385,8 +381,7 @@ def check_export():
     if os.path.exists(filepath):
         return jsonify({
             "exists": True,
-            "filename": filename
-        })
+            "filename": filename})
 
     return jsonify({
         "exists": False
@@ -423,8 +418,7 @@ def upload_resume():
 
     upload_path = os.path.join(
         "uploads",
-        filename
-    )
+        filename)
 
     file.save(upload_path)
 
@@ -435,5 +429,4 @@ def upload_resume():
 
     return jsonify({
         "message": "Resume uploaded successfully",
-        "resume": filename
-    })
+        "resume": filename})

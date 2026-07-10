@@ -1,7 +1,6 @@
 from database import db
 
 class Company(db.Model):
-
     __tablename__ = "company"
 
     id = db.Column(db.Integer, primary_key=True)

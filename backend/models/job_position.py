@@ -1,7 +1,6 @@
 from database import db
 
 class JobPosition(db.Model):
-
     __tablename__ = "job_position"
 
     id = db.Column(db.Integer, primary_key=True)

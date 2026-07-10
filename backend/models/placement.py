@@ -15,4 +15,4 @@ class Placement(db.Model):
 
     joining_date = db.Column(db.Date)
     
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    created_at = db.Column(db.DateTime, server_default = db.func.now())

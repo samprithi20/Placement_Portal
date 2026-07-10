@@ -1,7 +1,6 @@
 from database import db
 
 class Student(db.Model):
-
     __tablename__ = "student"
 
     id = db.Column(db.Integer, primary_key=True)

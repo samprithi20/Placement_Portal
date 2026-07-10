@@ -2,13 +2,13 @@ from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from extensions import cache
 from database import db
+
 import os
 from models.user import User
 from models.student import Student
 from models.company import Company
 from models.job_position import JobPosition
 from models.application import Application
-
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -19,29 +19,23 @@ def admin_dashboard():
     user = User.query.get(int(user_id))
 
     if user.role != "admin":
-        return jsonify({
-            "message": "Unauthorized"
-        }), 403
+        return jsonify({"message": "Unauthorized"}), 403
 
     total_students = User.query.filter_by(
         role="student",
-        is_blacklisted=False
-    ).count()
+        is_blacklisted=False).count()
 
     total_companies = User.query.filter_by(
         role="company",
-        is_blacklisted=False
-    ).count()
+        is_blacklisted=False).count()
 
     total_jobs = JobPosition.query.count()
 
     pending_companies = Company.query.filter_by(
-        approval_status="pending"
-    ).count()
+        approval_status="pending").count()
 
     pending_jobs = JobPosition.query.filter_by(
-        status="pending"
-    ).count()
+        status="pending").count()
 
     total_applications = Application.query.count()
 
@@ -51,8 +45,7 @@ def admin_dashboard():
     "total_jobs": total_jobs,
     "total_applications": total_applications,
     "pending_companies": pending_companies,
-    "pending_jobs": pending_jobs
-    })
+    "pending_jobs": pending_jobs})
 
 
 @admin_bp.route("/admin/pending-jobs")
@@ -62,13 +55,10 @@ def pending_jobs():
     admin = User.query.get(int(user_id))
 
     if admin.role != "admin":
-        return jsonify({
-            "message": "Unauthorized"
-        }), 403
+        return jsonify({"message": "Unauthorized"}), 403
 
     jobs = JobPosition.query.filter_by(
-        status="pending"
-    ).all()
+        status="pending").all()
 
     result = []
 
@@ -81,8 +71,7 @@ def pending_jobs():
             "company_name": company.company_name,
             "location": job.location,
             "salary": job.salary,
-            "status": job.status
-        })
+            "status": job.status})
 
     return jsonify(result)
 
@@ -93,24 +82,18 @@ def approve_job(job_id):
     admin = User.query.get(int(user_id))
 
     if admin.role != "admin":
-        return jsonify({
-            "message": "Unauthorized"
-        }), 403
+        return jsonify({"message": "Unauthorized"}), 403
 
     job = JobPosition.query.get(job_id)
 
     if not job:
-        return jsonify({
-            "message": "Job not found"
-        }), 404
+        return jsonify({"message": "Job not found"}), 404
 
     job.status = "approved"
     db.session.commit()
     cache.clear()
 
-    return jsonify({
-        "message": "Job approved successfully"
-    })
+    return jsonify({"message": "Job approved successfully"})
 
 @admin_bp.route("/admin/reject-company/<int:company_id>", methods=["DELETE"])
 @jwt_required()
@@ -119,16 +102,12 @@ def reject_company(company_id):
     admin = User.query.get(int(user_id))
 
     if admin.role != "admin":
-        return jsonify({
-            "message": "Unauthorized"
-        }), 403
+        return jsonify({"message": "Unauthorized"}), 403
 
     company = Company.query.get(company_id)
 
     if not company:
-        return jsonify({
-            "message": "Company not found"
-        }), 404
+        return jsonify({"message": "Company not found"}), 404
 
     user = User.query.get(company.user_id)
 
@@ -164,8 +143,7 @@ def all_jobs():
     for job in jobs:
         company = Company.query.get(job.company_id)
         application_count = Application.query.filter_by(
-            job_id=job.id
-        ).count()
+            job_id=job.id).count()
 
         result.append({
             "id": job.id,
@@ -211,8 +189,7 @@ def approve_company(company_id):
     cache.clear()
 
     return jsonify({
-        "message": "Company approved successfully"
-    })
+        "message": "Company approved successfully"})
 
 @admin_bp.route("/admin/pending-companies")
 @jwt_required()
@@ -221,12 +198,10 @@ def pending_companies():
     admin = User.query.get(int(user_id))
     if admin.role != "admin":
         return jsonify({
-            "message": "Unauthorized"
-        }), 403
+            "message": "Unauthorized"}), 403
 
     companies = Company.query.filter_by(
-        approval_status="pending"
-    ).all()
+        approval_status="pending").all()
 
     result = []
 
@@ -237,8 +212,7 @@ def pending_companies():
             "company_name": company.company_name,
             "industry": company.industry,
             "hr_name": company.hr_name,
-            "hr_email":company.hr_email
-        })
+            "hr_email":company.hr_email})
 
     return jsonify(result)
 
@@ -250,15 +224,13 @@ def all_companies():
     admin = User.query.get(int(user_id))
     if admin.role != "admin":
         return jsonify({
-            "message": "Unauthorized"
-        }), 403
+            "message": "Unauthorized"}), 403
 
     companies = Company.query.join(
         User,
         Company.user_id == User.id
     ).filter(
-        User.is_blacklisted == False
-    ).all()
+        User.is_blacklisted == False).all()
 
     result = []
 
@@ -291,10 +263,7 @@ def all_students():
 
     students = Student.query.join(
         User,
-        Student.user_id == User.id
-    ).filter(
-        User.is_blacklisted == False
-    ).all()
+        Student.user_id == User.id).filter(User.is_blacklisted == False).all()
 
     result = []
 
@@ -372,9 +341,7 @@ def get_reports():
     filename = "monthly_report.html"
 
     filepath = os.path.join(
-        "reports",
-        filename
-    )
+        "reports", filename )
 
     if os.path.exists(filepath):
         return jsonify({

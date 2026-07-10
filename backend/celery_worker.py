@@ -12,8 +12,7 @@ celery.conf.timezone = "Asia/Kolkata"
 celery.conf.beat_schedule = {
     "daily-interview-reminder": {
         "task": "tasks.send_interview_reminders",
-        "schedule": 10.0
-    },
+        "schedule": 10.0},
 
     "monthly-placement-report": {
         "task": "tasks.generate_monthly_report",

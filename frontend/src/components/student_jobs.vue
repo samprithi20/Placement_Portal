@@ -65,8 +65,7 @@
       </button>
 
       <p v-if="!job.is_eligible" class="text-danger mt-2">
-        {{ job.eligibility_message || "Eligibility criteria not matching" }}
-      </p>
+        {{ job.eligibility_message || "Eligibility criteria not matching" }} </p>
 
     </div>
 

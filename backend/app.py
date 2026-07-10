@@ -52,9 +52,7 @@ with app.app_context():
 def uploaded_file(filename):
 
     return send_from_directory(
-        app.config["UPLOAD_FOLDER"],
-        filename
-    )
+        app.config["UPLOAD_FOLDER"], filename)
 
 @app.route("/")
 def home():
@@ -70,9 +68,7 @@ def download_export(filename):
 @app.route("/reports/<filename>")
 def view_report(filename):
     return send_from_directory(
-        "reports",
-        filename
-    )
+        "reports",filename)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -60,7 +60,6 @@
       <button class="btn btn-info"
         @click="$router.push('/reports')"
       > View Reports </button>
-
     </div>
 
     <h3 class="mb-3"> Pending Companies </h3>
