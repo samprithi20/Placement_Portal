@@ -123,6 +123,27 @@ def reject_company(company_id):
         "message": "Company removed successfully"
     })
 
+@admin_bp.route("/admin/reject-job/<int:job_id>", methods=["DELETE"])
+@jwt_required()
+def reject_job(job_id):
+    user_id = get_jwt_identity()
+    admin = User.query.get(int(user_id))
+
+    if admin.role != "admin":
+        return jsonify({"message": "Unauthorized"}), 403
+
+    job = JobPosition.query.get(job_id)
+
+    if not job:
+        return jsonify({"message": "Job not found"}), 404
+
+    db.session.delete(job)
+    db.session.commit()
+    cache.clear()
+
+    return jsonify({
+        "message": "Job rejected successfully"
+    })
 
 @admin_bp.route("/admin/jobs")
 @jwt_required()
