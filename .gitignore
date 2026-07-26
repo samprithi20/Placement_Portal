@@ -4,6 +4,8 @@ __pycache__/
 dist/
 .vscode/
 
+
+
 backend/celerybeat-schedule
 backend/celerybeat-schedule.bak
 backend/celerybeat-schedule.dat
