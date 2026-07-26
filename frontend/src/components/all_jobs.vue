@@ -119,7 +119,6 @@ export default {
   },
 
   methods: {
-
     async loadJobs() {
       const token = localStorage.getItem("token")
 

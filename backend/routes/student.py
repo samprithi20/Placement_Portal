@@ -97,7 +97,6 @@ def update_student_profile():
         "resume",
         student.resume
     )
-
     db.session.commit()
     cache.clear()
     return jsonify({

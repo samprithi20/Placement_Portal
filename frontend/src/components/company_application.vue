@@ -26,7 +26,6 @@
         Job:
         {{ application.job_title }}
       </p>
-
       <p>
         Status:
         {{ application.status }}

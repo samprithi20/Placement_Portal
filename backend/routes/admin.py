@@ -17,7 +17,6 @@ admin_bp = Blueprint("admin", __name__)
 def admin_dashboard():
     user_id = get_jwt_identity()
     user = User.query.get(int(user_id))
-
     if user.role != "admin":
         return jsonify({"message": "Unauthorized"}), 403
 

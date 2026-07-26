@@ -8,7 +8,6 @@ class Student(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
     full_name = db.Column(db.String(100),nullable=False)
-
     department = db.Column(db.String(100))
 
     cgpa = db.Column(db.Float)

@@ -21,7 +21,6 @@
         Name:
         {{ student.full_name }}
       </h5>
-
       <h5>
         Department:
         {{ student.department }}

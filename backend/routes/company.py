@@ -104,7 +104,6 @@ def update_company_profile():
         "hr_email",
         company.hr_email
     )
-
     db.session.commit()
     cache.clear()
 

@@ -216,7 +216,6 @@ export default {
       )
 
       if (this.resume) {
-
         formData.append(
           "resume",
           this.resume

@@ -37,7 +37,6 @@
           Deactivated
         </span>
       </p>
-
       <div class="d-flex gap-2 mt-2">
         <button class="btn btn-warning"
           @click="deactivateUser(company.user_id)">

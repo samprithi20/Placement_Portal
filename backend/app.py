@@ -34,6 +34,7 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(stu_bp)
 app.register_blueprint(cmp_bp)
 
+
 with app.app_context():
     db.create_all()
     admin_exists = User.query.filter_by(

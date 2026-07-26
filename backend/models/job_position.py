@@ -18,7 +18,6 @@ class JobPosition(db.Model):
     status = db.Column(db.String(50), default="pending")
 
     required_skills = db.Column(db.Text)
-
     experience_required = db.Column(db.String(100))
 
     benefits = db.Column(db.Text)

@@ -96,7 +96,6 @@
               v-for="(row, index) in csvData"
               :key="index"
             >
-
               <td
               v-for="(cell, i) in row"
               :key="i">

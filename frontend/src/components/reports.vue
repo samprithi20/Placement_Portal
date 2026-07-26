@@ -11,7 +11,6 @@
     class="card p-3"
   >
     <h5>{{ report.filename }}</h5>
-
     <a
       :href="report.url"
       target="_blank"

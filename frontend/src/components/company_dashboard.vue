@@ -350,7 +350,6 @@ export default {
       localStorage.removeItem("token")
 
       localStorage.removeItem("role")
-
       this.$router.push("/")
 
     }

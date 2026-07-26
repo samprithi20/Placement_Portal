@@ -121,7 +121,6 @@ def export_student_csv(student_id):
         applications = Application.query.filter_by(
             student_id=student_id
         ).all()
-
         data = []
 
         for application in applications:

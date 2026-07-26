@@ -55,7 +55,6 @@
   >
     Register Company
   </button>
-
 </div>
 </div>
 

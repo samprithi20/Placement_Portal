@@ -7,6 +7,7 @@ celery = Celery(
     include=["tasks"]
 )
 
+
 celery.conf.timezone = "Asia/Kolkata"
 
 celery.conf.beat_schedule = {

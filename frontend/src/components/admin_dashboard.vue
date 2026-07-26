@@ -260,7 +260,6 @@ export default {
       this.loadPendingJobs()
       this.loadDashboard()
     },
-
     async rejectJob(jobId) {
       const token = localStorage.getItem("token")
 
